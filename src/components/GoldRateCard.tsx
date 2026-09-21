@@ -1,4 +1,4 @@
-import { motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowDownRight, ArrowUpRight, Clock3 } from "lucide-react";
 import { useEffect, useState } from "react";
 import GoldBadge from "./GoldBadge";
@@ -177,14 +177,18 @@ export default function GoldRateCard() {
                     isActive ? "text-wine-900" : "text-muted hover:text-wine-700"
                   }`}
                 >
+                  {/* Own presence, so a chip still sliding never holds the tab: see `keepFollower` in lib/motion. */}
                   {isActive && (
-                    <motion.span
-                      layoutId="rate-chip"
-                      aria-hidden
-                      className="gold-fill absolute inset-0 -z-10 rounded-full"
-                      style={{ boxShadow: "0 6px 14px -8px rgba(140,105,35,0.8)" }}
-                      transition={spring.soft}
-                    />
+                    <AnimatePresence initial={false}>
+                      <motion.span
+                        key="chip"
+                        layoutId="rate-chip"
+                        aria-hidden
+                        className="gold-fill absolute inset-0 -z-10 rounded-full"
+                        style={{ boxShadow: "0 6px 14px -8px rgba(140,105,35,0.8)" }}
+                        transition={spring.soft}
+                      />
+                    </AnimatePresence>
                   )}
                   {option.label}
                 </button>

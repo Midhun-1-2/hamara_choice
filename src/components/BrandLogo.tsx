@@ -1,4 +1,8 @@
-import { SwitchLayoutGroupContext, motion } from "framer-motion";
+import {
+  AnimatePresence,
+  SwitchLayoutGroupContext,
+  motion,
+} from "framer-motion";
 import { keepFollower, layout, spring } from "../lib/motion";
 
 /**
@@ -78,16 +82,20 @@ export default function BrandLogo({
     Without it the copy has nothing to keep and inherits whatever the projection
     wrote last, which is the hidden frame that runs before the morph starts.
   */
+  /* Own presence: see the note above `keepFollower` in lib/motion. */
   return (
     <SwitchLayoutGroupContext.Provider value={keepFollower}>
-      <motion.div
-        layoutId={layout.logo}
-        transition={spring.screen}
-        style={{ opacity: 1 }}
-        className={className}
-      >
-        {image}
-      </motion.div>
+      <AnimatePresence initial={false}>
+        <motion.div
+          key="logo"
+          layoutId={layout.logo}
+          transition={spring.screen}
+          style={{ opacity: 1 }}
+          className={className}
+        >
+          {image}
+        </motion.div>
+      </AnimatePresence>
     </SwitchLayoutGroupContext.Provider>
   );
 }

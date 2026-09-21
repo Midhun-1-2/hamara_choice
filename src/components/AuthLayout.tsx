@@ -1,7 +1,7 @@
 import { motion, useIsPresent, useReducedMotion } from "framer-motion";
 import type { Variants } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
-import { useRef } from "react";
+import { useState } from "react";
 import type { ReactNode } from "react";
 import BrandLogo from "./BrandLogo";
 import { ease, rise, spring } from "../lib/motion";
@@ -143,9 +143,12 @@ export default function AuthLayout({
   const reduced = useReducedMotion();
   const present = useIsPresent();
   /* Decided once per mount: is this the first auth screen of the session? */
-  const firstMount = useRef(!setRevealed);
-  setRevealed = true;
-  const reveal = !reduced && firstMount.current;
+  const [firstMount] = useState(() => {
+    const first = !setRevealed;
+    setRevealed = true;
+    return first;
+  });
+  const reveal = !reduced && firstMount;
 
   /*
     The auth flow does not carry a whole-screen transition — no scale, tilt or
@@ -223,7 +226,7 @@ export default function AuthLayout({
       <div className="no-scrollbar flex h-full w-full flex-col overflow-y-auto px-5 pb-[max(1rem,env(safe-area-inset-bottom))] pt-[max(1rem,calc(env(safe-area-inset-top)+0.5rem))] sm:px-8">
         <motion.div
           variants={column}
-          custom={firstMount.current}
+          custom={firstMount}
           initial="initial"
           animate={present ? "animate" : "exit"}
           /*
@@ -237,7 +240,7 @@ export default function AuthLayout({
           {/* Brand, standing on the set above the card */}
           <motion.div
             variants={rise}
-            initial={firstMount.current ? undefined : false}
+            initial={firstMount ? undefined : false}
             className="flex shrink-0 flex-col items-center"
           >
             {/*

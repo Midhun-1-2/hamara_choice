@@ -263,13 +263,17 @@ export default function JoinSchemeTab({ onJoined }: JoinSchemeTabProps) {
                           : "border border-line bg-cream text-muted hover:text-wine-700"
                       }`}
                     >
+                      {/* Own presence, so a chip still sliding never holds the tab: see `keepFollower` in lib/motion. */}
                       {isActive && (
-                        <motion.span
-                          layoutId="preset-chip"
-                          aria-hidden
-                          className="gold-fill absolute inset-0 -z-10 rounded-full"
-                          transition={spring.soft}
-                        />
+                        <AnimatePresence initial={false}>
+                          <motion.span
+                            key="chip"
+                            layoutId="preset-chip"
+                            aria-hidden
+                            className="gold-fill absolute inset-0 -z-10 rounded-full"
+                            transition={spring.soft}
+                          />
+                        </AnimatePresence>
                       )}
                       {formatRupees(preset)}
                     </button>

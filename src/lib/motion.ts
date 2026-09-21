@@ -151,6 +151,20 @@ export const gesture = {
  */
 export const keepFollower = { shouldPreserveFollowOpacity: () => true } as const;
 
+/*
+ * Why the shared elements sit inside their own `AnimatePresence`.
+ *
+ * A `layoutId` element registers with the nearest presence — the screen or
+ * tab panel that `AnimatePresence` is holding — and that panel cannot be
+ * removed until every registered element reports it is done. A shared
+ * element mid-morph is not done until its `spring.screen` settles, close to
+ * two seconds. So a tab left within two seconds of the dashboard landing
+ * stayed on screen, fully faded, until the button in it finished a morph
+ * nobody could see; the first tap on the nav read as a long stall. Giving
+ * each shared element a presence of its own (always present, unmounting with
+ * its parent like any plain element) takes it out of that count.
+ */
+
 /** Shared-element ids used across screens. */
 export const layout = {
   logo: "brand-logo",
