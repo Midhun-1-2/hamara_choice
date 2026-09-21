@@ -100,7 +100,10 @@ export default function DesktopNavigation({
           className="relative z-10 flex items-center justify-center px-1"
           style={{ height: "clamp(160px,26vh,280px)" }}
         >
-          {showLogo && <BrandLogo variant="lockup" tone="light" width={198} shared />}
+          {/* Same optical nudge as the auth screens: the diamond outweighs the type. */}
+          {showLogo && (
+            <BrandLogo variant="lockup" tone="light" width={198} className="ml-[8px]" shared />
+          )}
         </div>
 
         <nav aria-label="Primary" className="relative z-10 mt-4 flex flex-col gap-1.5">
