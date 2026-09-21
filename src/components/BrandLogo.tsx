@@ -71,12 +71,19 @@ export default function BrandLogo({
     return <div className={className}>{image}</div>;
   }
 
-  /* See `keepFollower`: the outgoing logo stays put until its screen leaves. */
+  /*
+    See `keepFollower`: the outgoing logo stays put until its screen leaves.
+    The explicit `opacity: 1` matters — on a `layoutId` element it becomes a
+    tracked value, and the value is what the outgoing copy is told to keep.
+    Without it the copy has nothing to keep and inherits whatever the projection
+    wrote last, which is the hidden frame that runs before the morph starts.
+  */
   return (
     <SwitchLayoutGroupContext.Provider value={keepFollower}>
       <motion.div
         layoutId={layout.logo}
         transition={spring.screen}
+        style={{ opacity: 1 }}
         className={className}
       >
         {image}

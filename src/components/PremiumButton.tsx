@@ -87,7 +87,10 @@ export default function PremiumButton({
         className={`group relative isolate inline-flex items-center justify-center overflow-hidden rounded-full font-medium tracking-luxe-sm uppercase transition-colors duration-300 disabled:cursor-not-allowed ${
           block ? "w-full" : ""
         } ${sizeClass[size]} ${variantClass[variant]} ${className}`}
-        style={{ boxShadow: disabled ? "none" : shadowFor[variant] }}
+        /* Opacity set inline on purpose (it is tracked, see BrandLogo); the
+           disabled dim moves here from the `disabled:opacity-40` utility,
+           which an inline value would otherwise override. */
+        style={{ boxShadow: disabled ? "none" : shadowFor[variant], opacity: disabled ? 0.4 : 1 }}
       >
         <span className="relative z-10 flex items-center justify-center gap-2.5 whitespace-nowrap">
           {leadingIcon}

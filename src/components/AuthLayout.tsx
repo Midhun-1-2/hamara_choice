@@ -39,9 +39,17 @@ interface AuthLayoutProps {
   is driven by presence, not by `exit` props, because variant labels do not
   propagate through this tree (the column sets its own `animate`).
 */
+/*
+  `custom` is "first auth screen of the session". The opening delay exists so
+  the brand lands a beat before the card on that first screen; on every later
+  step the brand is already standing still, so the delay only held the new
+  card back while the old one was leaving — a moment with no card on the set.
+*/
 const column: Variants = {
   initial: {},
-  animate: { transition: { staggerChildren: 0.055, delayChildren: 0.06 } },
+  animate: (first: boolean) => ({
+    transition: { staggerChildren: 0.055, delayChildren: first ? 0.06 : 0 },
+  }),
   exit: { transition: { staggerChildren: 0.03, staggerDirection: -1 } },
 };
 
@@ -172,9 +180,14 @@ export default function AuthLayout({
       /*
         Held for as long as the card takes to leave (0.26s plus the reverse
         stagger): the root itself does not move, it only stays mounted so the
-        card's departure below can play out on it.
+        card's departure below can play out on it. The one real fade (into the
+        dashboard) stays short: while it runs, this screen's copy of the logo
+        and the dashboard's copy are both drawn mid-morph, and the dashboard is
+        arriving under a scale-and-tilt of its own, so the two do not sit on
+        exactly the same pixels — the less time that overlap is visible the
+        better.
       */
-      transition={exitFade ? { duration: 0.3, ease: ease.exit } : { duration: 0.32 }}
+      transition={exitFade ? { duration: 0.14, ease: ease.exit } : { duration: 0.32 }}
       className="absolute inset-0 isolate flex flex-col overflow-hidden">
       {/*
         The set. Its floor is the photograph's own average tone, so while the
@@ -210,6 +223,7 @@ export default function AuthLayout({
       <div className="no-scrollbar flex h-full w-full flex-col overflow-y-auto px-5 pb-[max(1rem,env(safe-area-inset-bottom))] pt-[max(1rem,calc(env(safe-area-inset-top)+0.5rem))] sm:px-8">
         <motion.div
           variants={column}
+          custom={firstMount.current}
           initial="initial"
           animate={present ? "animate" : "exit"}
           /*
