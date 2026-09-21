@@ -1,0 +1,562 @@
+@import "tailwindcss";
+
+/*
+  THIRUKOCHI — light edition.
+  The house colours are unchanged; the balance is inverted. Cream and pearl
+  carry the interface, burgundy and gold are reserved for accent, emphasis and
+  the few places where the brand should speak loudly.
+*/
+@theme {
+  --font-display: "Poppins", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-sans: "Poppins", "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  /* Burgundy — accent only: CTAs, active states, editorial panels */
+  --color-wine-900: #3a0d13;
+  --color-wine-800: #4a1117;
+  --color-wine-700: #6b1f26;
+  --color-wine-600: #85303a;
+  --color-wine-500: #a04c55;
+  --color-wine-100: #f3e3e3;
+  --color-wine-50: #faf0ef;
+
+  /* Gold — real metal, never neon */
+  --color-gold-800: #6e5214;
+  --color-gold-700: #8a6a1f;
+  --color-gold-600: #b08d28;
+  --color-gold-500: #d4af37;
+  --color-gold-400: #e5c76b;
+  --color-gold-300: #efdca1;
+  --color-gold-200: #f4e8c6;
+  --color-gold-100: #f9f1dd;
+  --color-gold-50: #fdf9ef;
+
+  /* Surfaces */
+  --color-pearl: #ffffff;
+  --color-ivory: #fcfaf5;
+  --color-cream: #f8f4ea;
+  --color-beige: #f3ead9;
+  --color-line: #e8ded0;
+  --color-line-soft: #f1e9dc;
+
+  /* Type */
+  --color-ink: #211b1b;
+  --color-ink-soft: #3b312e;
+  --color-muted: #5f544f;
+  --color-muted-soft: #564b45;
+
+  /* Signals */
+  --color-positive: #2c7a56;
+  --color-negative: #b03b36;
+
+  --radius-card: 1.5rem;
+  --radius-tile: 1.125rem;
+}
+
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /*
+    Kills the 300ms tap delay phones add while they wait to see if a tap is a
+    double-tap-to-zoom. Every control in the app responds on the first touch.
+  */
+  button,
+  a,
+  label,
+  [role="button"],
+  [role="radio"],
+  [role="checkbox"] {
+    touch-action: manipulation;
+  }
+
+  html {
+    background-color: var(--color-ivory);
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--color-ivory);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-weight: 400;
+    letter-spacing: 0.004em;
+    -webkit-font-smoothing: antialiased;
+    overscroll-behavior: none;
+  }
+
+  button {
+    font-family: inherit;
+    color: inherit;
+  }
+
+  input,
+  textarea {
+    background: transparent;
+    font-family: inherit;
+    color: inherit;
+  }
+
+  /* Chrome's autofill plate would flood the pale fields; confine it to glyphs. */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-text-fill-color: var(--color-ink);
+    -webkit-background-clip: text;
+    background-clip: text;
+    caret-color: var(--color-wine-700);
+    transition: background-color 100000s ease-in-out 0s;
+  }
+
+  :focus {
+    outline: none;
+  }
+
+  :focus-visible {
+    outline: 2px solid rgba(107, 31, 38, 0.55);
+    outline-offset: 2px;
+    border-radius: 8px;
+  }
+
+  /* Fields draw their own focus ring, so the generic one would double up. */
+  input:focus-visible,
+  textarea:focus-visible {
+    outline: none;
+  }
+
+  ::selection {
+    background: rgba(212, 175, 55, 0.28);
+    color: var(--color-ink);
+  }
+}
+
+@utility font-display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  font-feature-settings: "ss01", "cv01";
+}
+
+/* ---------------------------------------------------------------- surfaces */
+
+/*
+  Surfaces are frosted now rather than opaque: the set behind the app reads
+  through every plate, and the blur is what keeps type legible over it.
+*/
+@utility surface {
+  background-color: rgba(255, 254, 251, 0.93);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    0 1px 2px rgba(68, 48, 30, 0.04),
+    0 16px 40px -26px rgba(68, 48, 30, 0.42);
+}
+
+/* Warmer plate for feature modules. */
+@utility surface-cream {
+  background-image: linear-gradient(
+    158deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(253, 250, 243, 0.92) 42%,
+    rgba(248, 242, 228, 0.9) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    0 18px 44px -26px rgba(68, 48, 30, 0.42);
+}
+
+/* Gilded plate — used sparingly, for the single most important module. */
+@utility surface-gilt {
+  background-image: linear-gradient(
+    152deg,
+    rgba(255, 253, 248, 0.96) 0%,
+    rgba(251, 244, 226, 0.93) 46%,
+    rgba(245, 233, 205, 0.9) 100%
+  );
+  border: 1px solid rgba(212, 175, 55, 0.42);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 22px 50px -28px rgba(140, 105, 35, 0.5);
+}
+
+/* Burgundy panel — promotional and editorial moments only. */
+@utility surface-wine {
+  background-image: linear-gradient(152deg, #6b1f26 0%, #4a1117 58%, #3a0d13 100%);
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  box-shadow: 0 24px 54px -30px rgba(58, 13, 19, 0.7);
+}
+
+@utility hairline {
+  border: 1px solid var(--color-line);
+}
+
+@utility lift-soft {
+  box-shadow:
+    0 1px 2px rgba(68, 48, 30, 0.05),
+    0 26px 52px -28px rgba(68, 48, 30, 0.4);
+}
+
+/* ------------------------------------------------------------------- gold */
+
+@utility gold-fill {
+  background-image: linear-gradient(135deg, #c29a2c 0%, #e0c063 46%, #d4af37 62%, #ab8420 100%);
+}
+
+@utility gold-fill-soft {
+  background-image: linear-gradient(140deg, #fbf3dd 0%, #f3e4bd 100%);
+}
+
+@utility wine-fill {
+  background-image: linear-gradient(140deg, #7c2630 0%, #6b1f26 46%, #4a1117 100%);
+}
+
+/* Foil lettering that still passes as text on a pale ground. */
+@utility text-gold-foil {
+  background-image: linear-gradient(100deg, #8a6a1f 0%, #c39c2d 32%, #d9b850 48%, #b08d28 68%, #8a6a1f 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility divider-gold {
+  background-image: linear-gradient(
+    90deg,
+    rgba(212, 175, 55, 0) 0%,
+    rgba(212, 175, 55, 0.55) 45%,
+    rgba(212, 175, 55, 0) 100%
+  );
+}
+
+/* --------------------------------------------------------------- textures */
+
+@utility grain {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%25' height='100%25' filter='url(%23g)'/></svg>");
+  background-size: 160px 160px;
+}
+
+@utility scroll-smooth-y {
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+  contain: paint;
+}
+
+/*
+  Small text links read best at their drawn size, but a 17px-tall target is
+  not a thumb target. This grows the touch area to roughly 44px without
+  moving a pixel of the layout.
+*/
+@utility tap-area {
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: -13px -10px;
+  }
+}
+
+@utility no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ------------------------------------------------------------- animations */
+
+/*
+  The old decoration was all travel: bands of light sliding across every
+  surface. This set breathes instead — light swells and fades in place, which
+  sits far quieter under a photograph.
+*/
+
+@keyframes glow-breathe {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.96);
+  }
+  50% {
+    opacity: 0.75;
+    transform: scale(1.02);
+  }
+}
+
+@utility glow-breathe {
+  animation: glow-breathe 7s ease-in-out infinite;
+}
+
+/* A gold rule brightening from its centre outwards. */
+@keyframes edge-pulse {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scaleX(0.7);
+  }
+  50% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+@utility edge-pulse {
+  animation: edge-pulse 6s ease-in-out infinite;
+  transform-origin: center;
+}
+
+/* Foil lettering, warming and cooling rather than being wiped across. */
+@keyframes foil-warm {
+  0%,
+  100% {
+    background-position: 30% 50%;
+    filter: saturate(1) brightness(1);
+  }
+  50% {
+    background-position: 70% 50%;
+    filter: saturate(1.25) brightness(1.1);
+  }
+}
+
+@utility text-gold-shimmer {
+  background-image: linear-gradient(
+    100deg,
+    #8a6a1f 0%,
+    #c49d2e 30%,
+    #e3c765 48%,
+    #c49d2e 66%,
+    #8a6a1f 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: foil-warm 8s ease-in-out infinite;
+}
+
+/* Waiting state: a slow pulse, not a running band. */
+@keyframes skeleton-pulse {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@utility skeleton {
+  background-color: #f4efe4;
+  animation: skeleton-pulse 1.8s ease-in-out infinite;
+}
+
+@utility tracking-luxe {
+  letter-spacing: 0.26em;
+}
+
+@utility tracking-luxe-sm {
+  letter-spacing: 0.15em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glow-breathe,
+  .edge-pulse,
+  .text-gold-shimmer,
+  .skeleton {
+    animation: none;
+  }
+}
+
+/* ------------------------------------------------------------- the opening */
+
+/*
+  The splash runs on CSS keyframes rather than on the motion library, and it is
+  the one screen in the app that does.
+
+  The app is wrapped in `MotionConfig reducedMotion="user"`, which is right for
+  the interface — but it means that on a machine with system animations turned
+  off, every library animation jumps straight to its end value. The opening
+  would then be a still photograph on that machine and nowhere else, which is
+  exactly the kind of fault that is impossible to see from the inside.
+  Keyframes below are driven by the compositor, so the opening plays for
+  everyone, and slows to a dignified minimum for anyone who has asked for less.
+*/
+
+@keyframes splash-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes splash-spin-back {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+/* Warm light swelling behind the mark. */
+@keyframes splash-halo {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(0.92);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.08);
+  }
+}
+
+/* A band of light crossing the lockup. */
+@keyframes splash-shine {
+  0% {
+    transform: translateX(-170%) skewX(-12deg);
+  }
+  55%,
+  100% {
+    transform: translateX(300%) skewX(-12deg);
+  }
+}
+
+/* Dust leaving the floor of the frame. */
+@keyframes splash-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.7);
+  }
+  18% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-210px) scale(1);
+  }
+}
+
+@keyframes splash-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Arrival: everything in the centre lands once, then the loops take over. */
+@keyframes splash-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes splash-lift {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes splash-glint {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* The mark is uncovered by a wipe travelling across it. */
+@keyframes splash-strike {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/*
+  The edge rides a full-width carrier that slides in from one lockup-width to
+  the left, so the line it holds at its right end travels 0% to 100% on the
+  compositor. Animating `left` did the same trip through layout every frame.
+*/
+@keyframes splash-edge {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  12%,
+  88% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+}
+
+@utility splash-anim {
+  animation-duration: var(--splash-duration, 1s);
+  animation-delay: var(--splash-delay, 0s);
+  animation-timing-function: var(--splash-ease, cubic-bezier(0.22, 1, 0.36, 1));
+  animation-iteration-count: var(--splash-repeat, 1);
+  animation-fill-mode: both;
+  animation-name: var(--splash-name);
+  /* Every splash keyframe is transform/opacity: hold the layers from frame one. */
+  will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .splash-anim {
+    /* Held, not stopped: the arrival still plays, the loops do not. */
+    animation-iteration-count: 1;
+    animation-duration: 0.4s;
+    animation-delay: 0s;
+  }
+}
+
+/*
+  PHONES — the decoration budget.
+
+  Every one of these is an infinite loop, and a dashboard carries six or seven
+  of them at once: each holds a promoted layer alive and asks the compositor for
+  work on every frame, including the frames the user needs to scroll. The gold
+  still reads — the gradients, the rules and the blooms are all still drawn —
+  they simply hold still. `text-gold-shimmer` is the worst of them, because it
+  animates a `filter`, which repaints the glyphs rather than compositing them.
+*/
+@media (pointer: coarse) {
+  .glow-breathe,
+  .edge-pulse,
+  .text-gold-shimmer {
+    animation: none;
+    will-change: auto;
+  }
+
+  .glow-breathe {
+    opacity: 0.5;
+  }
+
+  .edge-pulse {
+    opacity: 0.85;
+  }
+}
