@@ -32,7 +32,7 @@ export default function WalletTab({ onNavigate }: WalletTabProps) {
             Your gold, <span className="text-gold-shimmer">held</span>
           </>
         }
-        description="Everything you have accumulated with Thirukochi, and the bonus your invitations have earned."
+        description="Everything you have accumulated with Hamara Choice, and the bonus your invitations have earned."
         aside={<GoldBadge icon={<WalletIcon size={11} strokeWidth={1.8} />}>{wallet.scheme.name}</GoldBadge>}
       />
 

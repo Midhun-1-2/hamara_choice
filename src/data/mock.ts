@@ -22,8 +22,8 @@ export const goldRate = {
 
 export const referral = {
   code: "KOCHI24",
-  headline: "Invite friends to Thirukochi",
-  body: "Share your code with friends and family when they join Thirukochi. Referral benefits are as per store policy.",
+  headline: "Invite friends to Hamara Choice",
+  body: "Share your code with friends and family when they join Hamara Choice. Referral benefits are as per store policy.",
   invited: 6,
   joined: 4,
   bonusEarned: 4800,
