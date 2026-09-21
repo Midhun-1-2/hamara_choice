@@ -1,6 +1,7 @@
 import { motion, useIsPresent, useReducedMotion } from "framer-motion";
 import type { Variants } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
+import { useRef } from "react";
 import type { ReactNode } from "react";
 import BrandLogo from "./BrandLogo";
 import { ease, rise, spring } from "../lib/motion";
@@ -62,6 +63,21 @@ const riseAway: Variants = {
   exit: { opacity: 0, y: -8, transition: { duration: 0.2, ease: ease.exit } },
 };
 
+/*
+  THE FLICKER — and why the set and the brand animate only once.
+
+  Every auth step is its own `AuthLayout`, and steps overlap for 0.32s while
+  the card hands over. The photograph used to run its 1.6s reveal (opacity 0,
+  scale 1.08) on every mount, so the moment the outgoing step unmounted the
+  incoming one was still half-transparent: the set dipped to the shell's ivory
+  and came back — a visible blink on each step. The brand block did the same
+  in miniature, blooming from 0.94 over the outgoing one that was still at 1.
+  Both are meant to *hold still* between steps; only the card moves. So the
+  reveal plays on the first `AuthLayout` of the session and never again — a
+  later mount starts at its resting state.
+*/
+let setRevealed = false;
+
 const BG_PORTRAIT = "/brand/login-bg-mobile.jpg";
 const BG_LANDSCAPE = "/brand/login-bg-desktop.jpg";
 
@@ -118,6 +134,10 @@ export default function AuthLayout({
 }: AuthLayoutProps) {
   const reduced = useReducedMotion();
   const present = useIsPresent();
+  /* Decided once per mount: is this the first auth screen of the session? */
+  const firstMount = useRef(!setRevealed);
+  setRevealed = true;
+  const reveal = !reduced && firstMount.current;
 
   /*
     The auth flow does not carry a whole-screen transition — no scale, tilt or
@@ -156,19 +176,24 @@ export default function AuthLayout({
       */
       transition={exitFade ? { duration: 0.3, ease: ease.exit } : { duration: 0.32 }}
       className="absolute inset-0 isolate flex flex-col overflow-hidden">
-      {/* The set */}
-      <div aria-hidden className="absolute inset-0 -z-20">
+      {/*
+        The set. Its floor is the photograph's own average tone, so while the
+        first reveal is still fading the picture up (and the splash has already
+        gone) what shows through is warm sand, not the shell's pale ivory —
+        the hand-off from burgundy no longer passes through a bright flash.
+      */}
+      <div aria-hidden className="absolute inset-0 -z-20 bg-[#dcbfa6]">
         <motion.div
           className="absolute inset-0 bg-cover bg-center will-change-transform sm:hidden"
           style={{ backgroundImage: `url(${BG_PORTRAIT})` }}
-          initial={reduced ? false : { scale: 1.08, opacity: 0 }}
+          initial={reveal ? { scale: 1.08, opacity: 0 } : false}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 1.6, ease: ease.silk }}
         />
         <motion.div
           className="absolute inset-0 hidden bg-cover bg-center will-change-transform sm:block"
           style={{ backgroundImage: `url(${BG_LANDSCAPE})` }}
-          initial={reduced ? false : { scale: 1.06, opacity: 0 }}
+          initial={reveal ? { scale: 1.06, opacity: 0 } : false}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 1.6, ease: ease.silk }}
         />
@@ -196,7 +221,11 @@ export default function AuthLayout({
           className="mx-auto flex min-h-full w-full max-w-[520px] shrink-0 flex-col items-center justify-center gap-[clamp(10px,1.8vh,24px)] py-1"
         >
           {/* Brand, standing on the set above the card */}
-          <motion.div variants={rise} className="flex shrink-0 flex-col items-center">
+          <motion.div
+            variants={rise}
+            initial={firstMount.current ? undefined : false}
+            className="flex shrink-0 flex-col items-center"
+          >
             {/*
               Optically centred, not just geometrically: the diamond on the
               left is far denser than the type, so the lockup's visual mass sits

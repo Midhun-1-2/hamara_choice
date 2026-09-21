@@ -72,6 +72,9 @@ export default function PremiumButton({
       onClick={onClick}
       disabled={disabled}
       layoutId={layoutId}
+      /* No crossfade: see BrandLogo — the arriving button must not spend the
+         morph half-invisible over a card that is itself settling. */
+      layoutCrossfade={false}
       transition={spring.screen}
       initial={false}
       whileTap={disabled || reduced ? undefined : gesture.button.whileTap}
