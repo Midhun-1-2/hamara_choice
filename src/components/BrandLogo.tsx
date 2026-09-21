@@ -1,5 +1,5 @@
-import { motion } from "framer-motion";
-import { layout, spring } from "../lib/motion";
+import { SwitchLayoutGroupContext, motion } from "framer-motion";
+import { keepFollower, layout, spring } from "../lib/motion";
 
 /**
  * Supplied artwork, served from `public/brand`. Two tones of the same lockup:
@@ -57,6 +57,13 @@ export default function BrandLogo({
       style={sizeClass ? { height: "auto" } : { width, height: "auto" }}
       className={`block select-none ${sizeClass ?? ""}`}
       draggable={false}
+      /*
+        Decoded before the frame that first shows it. A fresh <img> is
+        otherwise decoded off-thread and can miss its first paint — on a phone
+        that is a frame with no logo, right as the previous screen's copy goes.
+      */
+      decoding="sync"
+      loading="eager"
     />
   );
 
@@ -64,21 +71,16 @@ export default function BrandLogo({
     return <div className={className}>{image}</div>;
   }
 
-  /*
-    `layoutCrossfade={false}`: by default the incoming shared element fades in
-    over the whole morph — with `spring.screen` that is well over a second in
-    which the arriving screen shows no logo, because the outgoing screen (and
-    the logo it carried) has already exited. Held at full opacity, the mark is
-    on screen from the first frame and only its position travels.
-  */
+  /* See `keepFollower`: the outgoing logo stays put until its screen leaves. */
   return (
-    <motion.div
-      layoutId={layout.logo}
-      layoutCrossfade={false}
-      transition={spring.screen}
-      className={className}
-    >
-      {image}
-    </motion.div>
+    <SwitchLayoutGroupContext.Provider value={keepFollower}>
+      <motion.div
+        layoutId={layout.logo}
+        transition={spring.screen}
+        className={className}
+      >
+        {image}
+      </motion.div>
+    </SwitchLayoutGroupContext.Provider>
   );
 }

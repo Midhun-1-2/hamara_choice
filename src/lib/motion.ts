@@ -137,6 +137,20 @@ export const gesture = {
   button: { whileHover: { scale: 1.02 }, whileTap: { scale: 0.97 } },
 };
 
+/**
+ * Hand-off rule for shared elements (the logo, the primary button).
+ *
+ * Framer's default crossfade fades the incoming copy up and, once the morph is
+ * half way, fades the outgoing copy down. Turning crossfade off instead hides
+ * the outgoing copy the instant the new one mounts. Either way there is a
+ * moment with only a half-drawn copy on screen — and on a phone, where the new
+ * screen's first paint can arrive a few frames late, that moment is a visible
+ * blink. This keeps the outgoing copy at its own opacity for the whole morph:
+ * it simply leaves with its screen, while the new one fades up over it.
+ * Provided via `SwitchLayoutGroupContext` around each shared element.
+ */
+export const keepFollower = { shouldPreserveFollowOpacity: () => true } as const;
+
 /** Shared-element ids used across screens. */
 export const layout = {
   logo: "brand-logo",

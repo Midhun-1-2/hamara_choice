@@ -18,7 +18,13 @@ export default function ScreenTransition({ children, className = "" }: ScreenTra
       initial="initial"
       animate="animate"
       exit="exit"
-      style={{ transformPerspective: PERSPECTIVE }}
+      /*
+        `will-change`: the screen is composited for its entrance anyway; without
+        this the layer is dropped the moment the transform reaches identity and
+        the whole screen repaints — a hitch on a phone, right as the dashboard
+        lands. Keeping the layer makes the last frame of the entrance free.
+      */
+      style={{ transformPerspective: PERSPECTIVE, willChange: "transform, opacity" }}
       className={`absolute inset-0 flex flex-col ${className}`}
     >
       {children}
